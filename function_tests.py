@@ -24,7 +24,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', header_text)
 
         # Page has an input field with placeholder text
-        inputbox = self.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Enter an item'
@@ -38,7 +38,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == '1: TO-DO ITEM 1' for row in rows)
+            any(row.text == '1: TO-DO ITEM 1' for row in rows),
+            'New to-do item does not appear in table!'
         )
 
         self.fail('Finished Test!')  # Delibrately fail
