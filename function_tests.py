@@ -39,7 +39,8 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
             any(row.text == '1: TO-DO ITEM 1' for row in rows),
-            'New to-do item does not appear in table!'
+            'New to-do item does not appear in table!\n'
+            f'Contents were: {table.text}\n'
         )
 
         self.fail('Finished Test!')  # Delibrately fail
