@@ -6,7 +6,7 @@ from django.test import TestCase
 class HomePageTest(TestCase):
 
     def test_uses_home_template(self):
-        response = self.client.get('/')
+        response = self.client.get('/')  # Client is used for get/post requests
         self.assertTemplateUsed(response, 'home.html')
 
     def test_can_save_a_POST_request(self):
