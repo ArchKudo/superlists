@@ -3,3 +3,4 @@ gecko.log
 *.pyc
 __pycache__
 geckodriver.log
+.spyproject/
