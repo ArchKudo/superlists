@@ -6,19 +6,36 @@ from lists.models import Item
 
 class HomePageTest(TestCase):
 
-    def test_uses_home_template(self):
-        response = self.client.get('/')  # Client is used for get/post requests
+    def test_root_uses_home_template(self):
+        # TestCase.client is used for get/post requests
+        response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_home_page_can_save_a_POST_request(self):
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-
+    def test_home_page_can_save_POST_request(self):
+        self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-        self.assertIn('A new list item', response.content.decode())
-        self.assertTemplateUsed(response, 'home.html')
+    def test_home_page_redirects_after_POST_request(self):
+        response = self.client.post('/', data={'item_text': 'A new list item'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_save_items_only_when_necessary(self):
+        self.client.get('/')
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_home_page_displays_all_items(self):
+        Item.objects.create(text='First list item of all list items')
+        Item.objects.create(text='Second list item of all list items')
+
+        response = self.client.get('/')
+
+        self.assertIn('First list item of all list items',
+                      response.content.decode())
+        self.assertIn('Second list item of all list items',
+                      response.content.decode())
 
 
 class ItemModelTest(TestCase):
