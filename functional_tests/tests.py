@@ -49,7 +49,6 @@ class NewVisitorTest(LiveServerTestCase):
         # Can add a new to-do item using ENTER key
         inputbox.send_keys('TO-DO ITEM 1')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
         self.wait_for_row_in_list_table('1: TO-DO ITEM 1')
 
@@ -57,7 +56,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('TO-DO ITEM 2')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
         self.wait_for_row_in_list_table('2: TO-DO ITEM 2')
         self.wait_for_row_in_list_table('1: TO-DO ITEM 1')
