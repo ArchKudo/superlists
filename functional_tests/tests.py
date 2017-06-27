@@ -81,7 +81,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Second user visits URL
         # Has a clean slate with no presence of first users list
         self.browser.get(self.live_server_url)
-        body_text = self.browser.find_element_by_id('body').text
+        body_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
 
         # Second users creates new list
