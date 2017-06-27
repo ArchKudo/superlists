@@ -1,5 +1,5 @@
 from django.test import TestCase
-from lists.models import Item
+from lists.models import Item, List
 
 # Create your tests here.
 
@@ -16,22 +16,31 @@ class HomePageTest(TestCase):
         self.assertEqual(Item.objects.count(), 0)
 
 
-class ItemModelTest(TestCase):
+def test_saving_retrieving_items(self):
+    lst = List()
+    lst.save()
 
-    def test_saving_retrieving_items(self):
-        first_item = Item()
-        first_item.text = 'The first item'
-        first_item.save()
+    first_item = Item()
+    first_item.text = 'The first item'
+    first_item.lst = lst
+    first_item.save()
 
-        second_item = Item()
-        second_item.text = 'The second item'
-        second_item.save()
+    second_item = Item()
+    second_item.text = 'The second item'
+    second_item.lst = lst
+    second_item.save()
 
-        saved_item = Item.objects.all()
-        self.assertEqual(saved_item.count(), 2)
+    saved_list = List.objects.first()
+    self.assertEqual(saved_list, lst)
 
-        self.assertEqual(saved_item[0].text, 'The first item')
-        self.assertEqual(saved_item[1].text, 'The second item')
+    saved_item = Item.objects.all()
+    self.assertEqual(saved_item.count(), 2)
+
+    self.assertEqual(saved_item[0].text, 'The first item')
+    self.assertEqual(saved_item[1].text, 'The second item')
+
+    self.assertEqual(saved_item[0].lst, lst)
+    self.assertEqual(saved_item[1].lst, lst)
 
 
 class ListViewTest(TestCase):
@@ -53,8 +62,11 @@ class ListViewTest(TestCase):
         self.assertRedirects(response, '/lists/first_list/')
 
     def test_first_list_page_displays_all_items(self):
-        Item.objects.create(text='First list item on list page')
-        Item.objects.create(text='Second list item on list page')
+        lst = List.objects.create()
+        Item.objects.create(
+            text='First list item on list page', lst=lst)
+        Item.objects.create(
+            text='Second list item on list page', lst=lst)
 
         response = self.client.get('/lists/first_list/')
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from lists.models import Item
+from lists.models import Item, List
 # from django.http import HttpResponse
 
 # Create your views here.
@@ -16,5 +16,6 @@ def list_page(request):
 
 
 def new_list_page(request):
-    Item.objects.create(text=request.POST['item_text'])
+    lst = List.objects.create()
+    Item.objects.create(text=request.POST['item_text'], lst=lst)
     return redirect('/lists/first_list/')
