@@ -20,22 +20,19 @@ class HomePageTest(TestCase):
     def test_home_page_redirects_after_POST_request(self):
         response = self.client.post('/', data={'item_text': 'A new list item'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/first_list/')
 
     def test_save_items_only_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
 
     def test_home_page_displays_all_items(self):
-        Item.objects.create(text='First list item of all list items')
-        Item.objects.create(text='Second list item of all list items')
+        Item.objects.create(text='First list item on home page')
+        Item.objects.create(text='Second list item on home page')
 
         response = self.client.get('/')
-
-        self.assertIn('First list item of all list items',
-                      response.content.decode())
-        self.assertIn('Second list item of all list items',
-                      response.content.decode())
+        self.assertContains(response, 'First list item on home page')
+        self.assertContains(response, 'Second list item on home page')
 
 
 class ItemModelTest(TestCase):
@@ -54,3 +51,15 @@ class ItemModelTest(TestCase):
 
         self.assertEqual(saved_item[0].text, 'The first item')
         self.assertEqual(saved_item[1].text, 'The second item')
+
+
+class ListViewTest(TestCase):
+
+    def test_first_list_page_displays_all_items(self):
+        Item.objects.create(text='First list item on list page')
+        Item.objects.create(text='Second list item on list page')
+
+        response = self.client.get('/lists/first_list/')
+
+        self.assertContains(response, 'First list item on list page')
+        self.assertContains(response, 'Second list item on list page')

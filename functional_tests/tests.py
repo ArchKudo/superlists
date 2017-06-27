@@ -60,4 +60,41 @@ class NewVisitorTest(LiveServerTestCase):
         self.wait_for_row_in_list_table('2: TO-DO ITEM 2')
         self.wait_for_row_in_list_table('1: TO-DO ITEM 1')
 
-        self.fail('Finished Test!')  # Delibrately fail
+        # self.fail('Finished Test!')  # Delibrately fail
+
+    def test_different_list_url_for_multiple_user(self):
+        # Can open URL and create a new list
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('TO-DO ITEM FROM FIRST USER 1')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: TO-DO ITEM FROM FIRST USER 1')
+
+        # Each list has unique URL
+        first_user_list_url = self.browser.current_url
+        self.assertRegex(first_user_list_url, '/lists/.+')
+
+        # Quit browser
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Second user visits URL
+        # Has a clean slate with no presence of first users list
+        self.browser.get(self.live_server_url)
+        body_text = self.browser.find_element_by_id('body').text
+        self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
+
+        # Second users creates new list
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('TO-DO ITEM FROM SECOND USER 2')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: TO-DO ITEM FROM SECOND USER 2')
+
+        # Second user has his own URL
+        second_user_list_url = self.browser.current_url
+        self.assertRegex(second_user_list_url, '/list/.+')
+        self.assertNotEqual(second_user_list_url, first_user_list_url)
+
+        body_text = self.browser.find_element_by_id('body').text
+        self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
+        self.assertIn('TO-DO ITEM FROM SECOND USER 2', body_text)
