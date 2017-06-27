@@ -26,14 +26,6 @@ class HomePageTest(TestCase):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_home_page_displays_all_items(self):
-        Item.objects.create(text='First list item on home page')
-        Item.objects.create(text='Second list item on home page')
-
-        response = self.client.get('/')
-        self.assertContains(response, 'First list item on home page')
-        self.assertContains(response, 'Second list item on home page')
-
 
 class ItemModelTest(TestCase):
 
@@ -54,6 +46,10 @@ class ItemModelTest(TestCase):
 
 
 class ListViewTest(TestCase):
+
+    def test_list_page_uses_list_template(self):
+        response = self.client.get('/lists/first_list/')
+        self.assertTemplateUsed(response, 'lists.html')
 
     def test_first_list_page_displays_all_items(self):
         Item.objects.create(text='First list item on list page')

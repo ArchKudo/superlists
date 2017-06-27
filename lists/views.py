@@ -18,4 +18,4 @@ def home_page(request):
 
 def list_page(request):
     items = Item.objects.all()
-    return render(request, 'home.html', {'items': items})
+    return render(request, 'lists.html', {'items': items})
