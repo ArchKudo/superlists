@@ -6,16 +6,15 @@ from lists.models import Item
 
 
 def home_page(request):
-    if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'])
-        return redirect('/lists/first_list/')
-
-    items = Item.objects.all()
-
     # render creates HttpResponse for us
-    return render(request, 'home.html', {'items': items})
+    return render(request, 'home.html')
 
 
 def list_page(request):
     items = Item.objects.all()
     return render(request, 'lists.html', {'items': items})
+
+
+def new_list_page(request):
+    Item.objects.create(text=request.POST['item_text'])
+    return redirect('/lists/first_list/')
