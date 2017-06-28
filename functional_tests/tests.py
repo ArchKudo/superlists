@@ -1,11 +1,11 @@
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 import time
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     '''A user story'''
 
     def setUp(self):
@@ -108,7 +108,8 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.set_window_size(1024, 768)
 
         inputbox = self.browser.find_element_by_id('id_new_item')
-
         # Inputbox is at centre of the screen
         self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2, 512, delta=10)
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=100)
