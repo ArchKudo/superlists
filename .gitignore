@@ -4,3 +4,5 @@ gecko.log
 __pycache__
 geckodriver.log
 .spyproject/
+superlists/todo.sublime-workspace
+superlists/todo.sublime-project
