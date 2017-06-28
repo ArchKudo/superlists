@@ -2,7 +2,7 @@
 {% block header_text %} TO-DO LIST {{lst.id}} {% endblock header_text %}
 {% block form_action %}/lists/{{lst.id}}/add_item/{% endblock form_action %}
 {% block table %}
-<table id="id_list_table">
+<table id="id_list_table" class="table">
     {% for item in lst.item_set.all %}
     <tr>
         <td>
