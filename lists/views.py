@@ -6,16 +6,23 @@ from lists.models import Item, List
 
 
 def home_page(request):
+    '''View for home page'''
     # render creates HttpResponse for us
     return render(request, 'home.html')
-
-
-def list_page(request):
-    items = Item.objects.all()
-    return render(request, 'lists.html', {'items': items})
 
 
 def new_list_page(request):
     lst = List.objects.create()
     Item.objects.create(text=request.POST['item_text'], lst=lst)
-    return redirect('/lists/first_list/')
+    return redirect(f'/lists/{lst.id}/')
+
+
+def list_page(request, lst_id):
+    lst = List.objects.get(id=lst_id)
+    return render(request, 'lists.html', {'lst': lst})
+
+
+def add_item(request, lst_id):
+    lst = List.objects.get(id=lst_id)
+    Item.objects.create(text=request.POST['item_text'], lst=lst)
+    return redirect(f'/lists/{lst.id}/')

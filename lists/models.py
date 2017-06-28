@@ -7,9 +7,13 @@ from django.db import models
 
 
 class List(models.Model):
+    '''A model for TO-DO lists
+    A group of items can belong to a unique list thus,
+    Allows creation for multiple lists'''
     pass
 
 
 class Item(models.Model):
+    '''A model for TO-DO list items'''
     text = models.TextField(default='')
     lst = models.ForeignKey(List, default=None)
