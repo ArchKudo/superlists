@@ -6,10 +6,10 @@ import time
 
 
 class NewVisitorTest(LiveServerTestCase):
+    '''A user story'''
 
     def setUp(self):
         self.browser = webdriver.Firefox()
-        # self.browser.implicitly_wait(3)
 
     def tearDown(self):
         self.browser.quit()
@@ -29,9 +29,10 @@ class NewVisitorTest(LiveServerTestCase):
                 time.sleep(0.5)
 
     def test_can_start_list_and_retrieve_later(self):
-        # A user story
 
         # Can checkout homepage
+        # live_server_url is used instead of hard-coded address like
+        # localhost:8000
         self.browser.get(self.live_server_url)
 
         # Page title and header mention To-do list
@@ -86,15 +87,16 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Second users creates new list
         inputbox = self.browser.find_element_by_id('id_new_item')
-        inputbox.send_keys('TO-DO ITEM FROM SECOND USER 2')
+        inputbox.send_keys('TO-DO ITEM FROM SECOND USER 1')
         inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: TO-DO ITEM FROM SECOND USER 2')
+        self.wait_for_row_in_list_table('1: TO-DO ITEM FROM SECOND USER 1')
 
         # Second user has his own URL
         second_user_list_url = self.browser.current_url
-        self.assertRegex(second_user_list_url, '/list/.+')
+        self.assertRegex(second_user_list_url, '/lists/.+')
         self.assertNotEqual(second_user_list_url, first_user_list_url)
 
+        # Recheck what is present in second user's list
         body_text = self.browser.find_element_by_id('body').text
         self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
-        self.assertIn('TO-DO ITEM FROM SECOND USER 2', body_text)
+        self.assertIn('TO-DO ITEM FROM SECOND USER 1', body_text)
