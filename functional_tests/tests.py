@@ -113,3 +113,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
             delta=100)
+
+    # TODO: Customize bootstrap using SASS
+    # TODO: Use {% static %}
+    # TODO: Use npm
