@@ -97,6 +97,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotEqual(second_user_list_url, first_user_list_url)
 
         # Recheck what is present in second user's list
-        body_text = self.browser.find_element_by_id('body').text
+        body_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
         self.assertIn('TO-DO ITEM FROM SECOND USER 1', body_text)
