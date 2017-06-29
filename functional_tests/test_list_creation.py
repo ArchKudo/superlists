@@ -1,36 +1,6 @@
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from .base_tests import FunctionalTestSetup
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
-from unittest import skip
-import os
-import time
-
-
-class FunctionalTestSetup(StaticLiveServerTestCase):
-
-    def setUp(self):
-        self.browser = webdriver.Firefox()
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def wait_for_row_in_list_table(self, row_text):
-        MAX_WAIT = 10
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(row_text, [row.text for row in rows])
-                return
-            except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
 
 
 class NewVisitorTest(FunctionalTestSetup):
@@ -108,39 +78,3 @@ class NewVisitorTest(FunctionalTestSetup):
         body_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
         self.assertIn('TO-DO ITEM FROM SECOND USER 1', body_text)
-
-
-class LayoutAndStylingTest(FunctionalTestSetup):
-
-    def test_layout_styling(self):
-        self.browser.get(self.live_server_url)
-
-        # Window is 1024 x 768
-        self.browser.set_window_size(1024, 768)
-
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        # Inputbox is at centre of the screen
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=100)
-
-
-class ItemValidationTest(FunctionalTestSetup):
-
-    @skip
-    def test_cannot_add_empty_list_items(self):
-        # Try submitting blank items by pressing ENTER
-
-        # Refresh page to show warning message
-        #
-        # Try submitting some text
-        #
-        # Submit another blank item
-        #
-        # Recieve similar warning message
-        #
-        self.fail('Write tests')
-    # TODO: Customize bootstrap using SASS
-    # TODO: Use {% static %}
-    # TODO: Use npm
