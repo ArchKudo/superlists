@@ -27,5 +27,4 @@ urlpatterns = [
     url(r'^$', views.home_page, name='home_page'),
     url(r'^lists/new_list/$', views.new_list_page, name='new_list_page'),
     url(r'^lists/(\d+)/$', views.list_page, name='list_page'),
-    url(r'^lists/(\d+)/add_item/$', views.add_item, name='add_item'),
 ]

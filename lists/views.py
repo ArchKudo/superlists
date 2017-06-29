@@ -27,9 +27,3 @@ def list_page(request, lst_id):
         Item.objects.create(text=request.POST['item_text'], lst=lst)
         return redirect(f'/lists/{lst.id}/')
     return render(request, 'lists.html', {'lst': lst})
-
-
-def add_item(request, lst_id):
-    lst = List.objects.get(id=lst_id)
-    Item.objects.create(text=request.POST['item_text'], lst=lst)
-    return redirect(f'/lists/{lst.id}/')
