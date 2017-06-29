@@ -30,6 +30,17 @@ class FunctionalTestSetup(StaticLiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
+    def wait_for(self, func):
+        MAX_WAIT = 10
+        start_time = time.time()
+        while True:
+            try:
+                return func()
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
     # TODO: Customize bootstrap using SASS
     # TODO: Use {% static %}
     # TODO: Use npm
