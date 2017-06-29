@@ -49,17 +49,25 @@ class ListPageTest(TestCase):
         self.assertTemplateUsed(response, 'lists.html')
 
     def test_list_page_can_save_POST_request(self):
-        self.client.post('/lists/new_list/',
+        lst = List.objects.create()
+
+        self.client.post(f'/lists/{lst.id}/',
                          data={'item_text': 'A new list item'})
+
         self.assertEqual(Item.objects.count(), 1)
+
         new_item = Item.objects.first()
+
         self.assertEqual(new_item.text, 'A new list item')
+        self.assertEqual(new_item.lst, lst)
 
     def test_list_page_redirects_after_POST_request(self):
+        lst = List.objects.create()
+
         response = self.client.post(
-            '/lists/new_list/', data={'item_text': 'A new list item'})
-        first_list = List.objects.first()
-        self.assertRedirects(response, f'/lists/{first_list.id}/')
+            f'/lists/{lst.id}/', data={'item_text': 'A new list item'})
+
+        self.assertRedirects(response, f'/lists/{lst.id}/')
 
     def test_first_list_page_displays_all_items(self):
         lst = List.objects.create()
