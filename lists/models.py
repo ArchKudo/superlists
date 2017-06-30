@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
@@ -10,7 +11,9 @@ class List(models.Model):
     '''A model for TO-DO lists
     A group of items can belong to a unique list thus,
     Allows creation for multiple lists'''
-    pass
+
+    def get_absolute_url(self):
+        return reverse('list_page', args=[self.id])
 
 
 class Item(models.Model):

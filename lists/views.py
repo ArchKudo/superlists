@@ -19,7 +19,7 @@ def new_list_page(request):
         lst.delete()
         error = "You can't have an empty list item"
         return render(request, 'home.html', {'error': error})
-    return redirect(f'/lists/{lst.id}/')
+    return redirect(lst)
 
 
 def list_page(request, lst_id):
@@ -31,7 +31,7 @@ def list_page(request, lst_id):
             item = Item(text=request.POST['item_text'], lst=lst)
             item.full_clean()
             item.save()
-            return redirect(f'/lists/{lst.id}/')
+            return redirect(lst)
         except ValidationError as e:
             error = "You can't have an empty list item"
     return render(request, 'lists.html', {'lst': lst, 'error': error})
