@@ -48,6 +48,11 @@ class ListPageTest(TestCase):
         response = self.client.get(f'/lists/{lst.id}/')
         self.assertTemplateUsed(response, 'lists.html')
 
+    def test_passes_correct_list_to_template(self):
+        lst = List.objects.create()
+        response = self.client.get(f'/lists/{lst.id}/')
+        self.assertEqual(response.context['lst'], lst)
+
     def test_list_page_can_save_POST_request(self):
         lst = List.objects.create()
 
@@ -96,10 +101,14 @@ class ListPageTest(TestCase):
         self.assertNotContains(response, 'Other list item 1')
         self.assertNotContains(response, 'Other list item 2')
 
-    def test_passes_correct_list_to_template(self):
+    def test_validation_error_are_on_list_page(self):
         lst = List.objects.create()
-        response = self.client.get(f'/lists/{lst.id}/')
-        self.assertEqual(response.context['lst'], lst)
+        response = self.client.post(
+            f'/lists/{lst.id}/', data={'item_text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lists.html')
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
 
 
 class NewListPageItemTest(TestCase):
@@ -108,7 +117,7 @@ class NewListPageItemTest(TestCase):
     def test_can_save_POST_request_to_exisiting_list(self):
         lst = List.objects.create()
 
-        self.client.post(f'/lists/{lst.id}/add_item/',
+        self.client.post(f'/lists/{lst.id}/',
                          data={'item_text': 'A new item for list'})
         self.assertEqual(Item.objects.count(), 1)
         self.assertEqual(Item.objects.first().text,
@@ -118,6 +127,6 @@ class NewListPageItemTest(TestCase):
     def test_redirect_to_list_view(self):
         lst = List.objects.create()
         response = self.client.post(
-            f'/lists/{lst.id}/add_item/',
+            f'/lists/{lst.id}/',
             data={'item_text': 'A new item for existing list'})
         self.assertRedirects(response, f'/lists/{lst.id}/')

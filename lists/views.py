@@ -14,6 +14,7 @@ def new_list_page(request):
     item = Item.objects.create(text=request.POST['item_text'], lst=lst)
     try:
         item.full_clean()
+        item.save()
     except ValidationError:
         lst.delete()
         error = "You can't have an empty list item"
@@ -23,7 +24,14 @@ def new_list_page(request):
 
 def list_page(request, lst_id):
     lst = List.objects.get(id=lst_id)
+    error = None
+
     if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'], lst=lst)
-        return redirect(f'/lists/{lst.id}/')
-    return render(request, 'lists.html', {'lst': lst})
+        try:
+            item = Item(text=request.POST['item_text'], lst=lst)
+            item.full_clean()
+            item.save()
+            return redirect(f'/lists/{lst.id}/')
+        except ValidationError as e:
+            error = "You can't have an empty list item"
+    return render(request, 'lists.html', {'lst': lst, 'error': error})
