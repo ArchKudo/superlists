@@ -19,7 +19,7 @@ class NewVisitorTest(FunctionalTestSetup):
         self.assertIn('To-Do', header_text)
 
         # Page has an input field with placeholder text
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Enter an item'
@@ -32,7 +32,7 @@ class NewVisitorTest(FunctionalTestSetup):
         self.wait_for_row_in_list_table('1: TO-DO ITEM 1')
 
         # New to-do item is correctly displayed
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('TO-DO ITEM 2')
         inputbox.send_keys(Keys.ENTER)
 
@@ -44,7 +44,7 @@ class NewVisitorTest(FunctionalTestSetup):
     def test_different_list_url_for_multiple_user(self):
         # Can open URL and create a new list
         self.browser.get(self.live_server_url)
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('TO-DO ITEM FROM FIRST USER 1')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: TO-DO ITEM FROM FIRST USER 1')
@@ -64,7 +64,7 @@ class NewVisitorTest(FunctionalTestSetup):
         self.assertNotIn('TO-DO ITEM FROM FIRST USER 1', body_text)
 
         # Second users creates new list
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('TO-DO ITEM FROM SECOND USER 1')
         inputbox.send_keys(Keys.ENTER)
         self.wait_for_row_in_list_table('1: TO-DO ITEM FROM SECOND USER 1')
