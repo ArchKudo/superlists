@@ -12,7 +12,7 @@ def home_page(request):
 
 def new_list_page(request):
     lst = List.objects.create()
-    item = Item.objects.create(text=request.POST['item_text'], lst=lst)
+    item = Item.objects.create(text=request.POST['text'], lst=lst)
     try:
         item.full_clean()
         item.save()
@@ -29,7 +29,7 @@ def list_page(request, lst_id):
 
     if request.method == 'POST':
         try:
-            item = Item(text=request.POST['item_text'], lst=lst)
+            item = Item(text=request.POST['text'], lst=lst)
             item.full_clean()
             item.save()
             return redirect(lst)

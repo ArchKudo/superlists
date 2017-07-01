@@ -22,25 +22,25 @@ class NewListPageTest(TestCase):
 
     def test_can_save_post_request(self):
         self.client.post('/lists/new_list/',
-                         data={'item_text': 'A new list item'})
+                         data={'text': 'A new list item'})
         self.assertEqual(Item.objects.count(), 1)
         self.assertEqual(Item.objects.first().text, 'A new list item')
 
     def test_redirect_after_POST(self):
         response = self.client.post(
-            '/lists/new_list/', data={'item_text': 'A new list item'})
+            '/lists/new_list/', data={'text': 'A new list item'})
         new_list = List.objects.first()
         self.assertRedirects(response, f'/lists/{new_list.id}/')
 
     def test_validate_errors_are_sent_back_to_home_page_template(self):
-        response = self.client.post('/lists/new_list/', data={'item_text': ''})
+        response = self.client.post('/lists/new_list/', data={'text': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
         expected_error = escape("You can't have an empty list item")
         self.assertContains(response, expected_error)
 
     def test_invalid_items_are_not_saved(self):
-        self.client.post('/lists/new_list/', data={'item_text': ''})
+        self.client.post('/lists/new_list/', data={'text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
 
@@ -62,7 +62,7 @@ class ListPageTest(TestCase):
         lst = List.objects.create()
 
         self.client.post(f'/lists/{lst.id}/',
-                         data={'item_text': 'A new list item'})
+                         data={'text': 'A new list item'})
 
         self.assertEqual(Item.objects.count(), 1)
 
@@ -75,7 +75,7 @@ class ListPageTest(TestCase):
         lst = List.objects.create()
 
         response = self.client.post(
-            f'/lists/{lst.id}/', data={'item_text': 'A new list item'})
+            f'/lists/{lst.id}/', data={'text': 'A new list item'})
 
         self.assertRedirects(response, f'/lists/{lst.id}/')
 
@@ -109,7 +109,7 @@ class ListPageTest(TestCase):
     def test_validation_error_are_on_list_page(self):
         lst = List.objects.create()
         response = self.client.post(
-            f'/lists/{lst.id}/', data={'item_text': ''})
+            f'/lists/{lst.id}/', data={'text': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lists.html')
         expected_error = escape("You can't have an empty list item")
@@ -123,7 +123,7 @@ class NewListPageItemTest(TestCase):
         lst = List.objects.create()
 
         self.client.post(f'/lists/{lst.id}/',
-                         data={'item_text': 'A new item for list'})
+                         data={'text': 'A new item for list'})
         self.assertEqual(Item.objects.count(), 1)
         self.assertEqual(Item.objects.first().text,
                          'A new item for list')
@@ -133,5 +133,5 @@ class NewListPageItemTest(TestCase):
         lst = List.objects.create()
         response = self.client.post(
             f'/lists/{lst.id}/',
-            data={'item_text': 'A new item for existing list'})
+            data={'text': 'A new item for existing list'})
         self.assertRedirects(response, f'/lists/{lst.id}/')
