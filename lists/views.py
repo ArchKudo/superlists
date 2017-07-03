@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
-from lists.models import Item, List
+from lists.models import List
 from lists.forms import ItemForm
-from django.core.exceptions import ValidationError
 
 
 def home_page(request):
@@ -15,7 +14,7 @@ def new_list_page(request):
 
     if form.is_valid():
         lst = List.objects.create()
-        Item.objects.create(text=request.POST['text'], lst=lst)
+        form.save(lst)
         return redirect(lst)
 
     else:
@@ -30,7 +29,7 @@ def list_page(request, lst_id):
         form = ItemForm(data=request.POST)
 
         if form.is_valid():
-            Item.objects.create(text=request.POST['text'], lst=lst)
+            form.save(lst)
             return redirect(lst)
 
     return render(request, 'lists.html', {'lst': lst, 'form': form, })
