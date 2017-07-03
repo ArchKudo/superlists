@@ -20,3 +20,10 @@ class Item(models.Model):
     '''A model for TO-DO list items'''
     text = models.TextField(default='')
     lst = models.ForeignKey(List, default=None)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        ordering = ('id',)
+        unique_together = ('lst', 'text')
