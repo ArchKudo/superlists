@@ -1,62 +1,9 @@
 from django.test import TestCase
+from django.utils.html import escape
 from lists.forms import ItemForm
 from lists.models import Item, List
 from lists.forms import EMPTY_ITEM_ERROR
-from django.utils.html import escape
-
-
-class HomePageTest(TestCase):
-    '''Tests home page view'''
-
-    def test_uses_home_template(self):
-        # TestCase.client is used for get/post requests
-        response = self.client.get('/')
-        self.assertTemplateUsed(response, 'home.html')
-
-    def test_home_page_uses_item_form(self):
-        response = self.client.get('/')
-        self.assertIsInstance(response.context['form'], ItemForm)
-
-
-class NewListPageTest(TestCase):
-    '''Tests new list page view'''
-
-    def test_can_save_post_request(self):
-        self.client.post('/lists/new_list/',
-                         data={'text': 'A new list item'})
-        self.assertEqual(Item.objects.count(), 1)
-        self.assertEqual(Item.objects.first().text, 'A new list item')
-
-    def test_redirect_after_POST(self):
-        response = self.client.post(
-            '/lists/new_list/', data={'text': 'A new list item'})
-        new_list = List.objects.first()
-        self.assertRedirects(response, f'/lists/{new_list.id}/')
-
-    def test_invalid_input_renders_home_template(self):
-        response = self.client.post('/lists/new_list/', data={'text': ''})
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'home.html')
-
-    def test_validation_errors_are_shown_in_home_page(self):
-        response = self.client.post('/lists/new_list/', data={'text': ''})
-        expected_error = escape(EMPTY_ITEM_ERROR)
-        self.assertContains(response, expected_error)
-
-    def test_invalid_input_passes_form_to_template(self):
-        response = self.client.post('/lists/new_list/', data={'text': ''})
-        self.assertIsInstance(response.context['form'], ItemForm)
-
-    def test_invalid_items_are_not_saved(self):
-        self.client.post('/lists/new_list/', data={'text': ''})
-        self.assertEqual(List.objects.count(), 0)
-        self.assertEqual(Item.objects.count(), 0)
-
-    def test_display_item_form(self):
-        lst = List.objects.create()
-        response = self.client.get(f'/lists/{lst.id}/')
-        self.assertIsInstance(response.context['form'], ItemForm)
-        self.assertContains(response, 'name="text"')
+from unittest import skip
 
 
 class ListPageTest(TestCase):
@@ -150,9 +97,16 @@ class ListPageTest(TestCase):
         expected_error = escape("You can't have an empty list item")
         self.assertContains(response, expected_error)
 
-
-class NewListPageItemTest(TestCase):
-    '''Test add item view'''
+    @skip
+    def test_duplicate_item_validation_are_on_list_page(self):
+        lst = List.objects.create()
+        Item.objects.create(lst=lst, text='Unique Item')
+        response = self.client.post(
+            f'/lists/{lst.id}/', data={'text': 'Unique Item'})
+        expected_error = escape('You\'ve already added this item to your list')
+        self.assertContains(response, expected_error)
+        self.assertTemplateUsed(response, 'lists.html')
+        self.assertEqual(Item.objects.all().count(), 1)
 
     def test_can_save_POST_request_to_exisiting_list(self):
         lst = List.objects.create()

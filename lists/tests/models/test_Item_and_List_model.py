@@ -3,8 +3,7 @@ from lists.models import Item, List
 from django.core.exceptions import ValidationError
 
 
-class ListAndItemModelsTest(TestCase):
-    '''Tests different models present in models.py'''
+class ItemAndListModelsTest(TestCase):
 
     def test_item_is_related_to_list(self):
         lst = List.objects.create()
@@ -42,21 +41,3 @@ class ListAndItemModelsTest(TestCase):
 
         self.assertEqual(list(Item.objects.all()), [
                          item_one, item_two, item_three])
-
-
-class ListModelTest(TestCase):
-
-    def test_get_absolute_url(self):
-        lst = List.objects.create()
-        self.assertEqual(lst.get_absolute_url(), f'/lists/{lst.id}/')
-
-
-class ItemModelTest(TestCase):
-
-    def test_default_text(self):
-        item = Item()
-        self.assertEqual(item.text, '')
-
-    def test_string_representation(self):
-        item = Item(text='Item 1')
-        self.assertEqual(str(item), 'Item 1')
