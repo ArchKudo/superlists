@@ -55,4 +55,33 @@ class ItemValidationTest(FunctionalTestSetup):
         # Browser returns error
         self.wait_for(lambda: self.assertEqual(
             self.browser.find_element_by_css_selector(
-                '.has_error').text, 'Cannot add duplicate items!'))
+                '.has-error').text, 'Cannot add duplicate items!'))
+
+    def test_error_messages_are_cleared_on_input(self):
+
+        # Start the browser
+        self.browser.get(self.live_server_url)
+
+        # Add a new item
+        self.get_item_input_box().send_keys('Unique Item')
+        self.get_item_input_box().send_keys(Keys.ENTER)
+
+        # Check for newly added item in table
+        self.wait_for_row_in_list_table('1: Unique Item')
+
+        # Re-enter the same item
+        self.get_item_input_box().send_keys('Unique Item')
+        self.get_item_input_box().send_keys(Keys.ENTER)
+
+        # Check whether it raises error
+        self.wait_for(lambda: self.assertTrue(
+            self.browser.find_element_by_css_selector(
+                '.has-error').is_diplayed()))
+
+        # Typing in the inputbox removes the error
+        self.get_item_input_box().send_keys('a')
+
+        # Check whether the error disappears
+        self.wait_for(lambda: self.assertFalse(
+            self.browser.find_element_by_css_selector(
+                '.has-error').is_diplayed()))
