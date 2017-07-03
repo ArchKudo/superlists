@@ -1,9 +1,8 @@
 from django.test import TestCase
 from django.utils.html import escape
-from lists.forms import ItemForm
+from lists.forms import (ExistingListItemForm,
+                         DUPLICATE_ITEM_ERROR, EMPTY_ITEM_ERROR)
 from lists.models import Item, List
-from lists.forms import EMPTY_ITEM_ERROR
-from unittest import skip
 
 
 class ListPageTest(TestCase):
@@ -24,7 +23,13 @@ class ListPageTest(TestCase):
 
     def test_invalid_input_passes_form_to_template(self):
         response = self.post_invalid_input()
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
+
+    def test_display_item_form(self):
+        lst = List.objects.create()
+        response = self.client.get(f'/lists/{lst.id}/')
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
+        self.assertContains(response, 'name="text"')
 
     def test_invalid_input_shows_error_on_page(self):
         response = self.post_invalid_input()
@@ -94,16 +99,15 @@ class ListPageTest(TestCase):
             f'/lists/{lst.id}/', data={'text': ''})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lists.html')
-        expected_error = escape("You can't have an empty list item")
+        expected_error = escape(EMPTY_ITEM_ERROR)
         self.assertContains(response, expected_error)
 
-    @skip
     def test_duplicate_item_validation_are_on_list_page(self):
         lst = List.objects.create()
         Item.objects.create(lst=lst, text='Unique Item')
         response = self.client.post(
             f'/lists/{lst.id}/', data={'text': 'Unique Item'})
-        expected_error = escape('You\'ve already added this item to your list')
+        expected_error = escape(DUPLICATE_ITEM_ERROR)
         self.assertContains(response, expected_error)
         self.assertTemplateUsed(response, 'lists.html')
         self.assertEqual(Item.objects.all().count(), 1)
