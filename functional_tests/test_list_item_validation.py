@@ -76,7 +76,7 @@ class ItemValidationTest(FunctionalTestSetup):
         # Check whether it raises error
         self.wait_for(lambda: self.assertTrue(
             self.browser.find_element_by_css_selector(
-                '.has-error').is_diplayed()))
+                '.has-error').is_displayed()))
 
         # Typing in the inputbox removes the error
         self.get_item_input_box().send_keys('a')
@@ -84,4 +84,4 @@ class ItemValidationTest(FunctionalTestSetup):
         # Check whether the error disappears
         self.wait_for(lambda: self.assertFalse(
             self.browser.find_element_by_css_selector(
-                '.has-error').is_diplayed()))
+                '.has-error').is_displayed()))
