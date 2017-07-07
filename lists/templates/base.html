@@ -19,6 +19,14 @@
 
 <body>
     <div class="container-fluid">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">To-Do</a>
+                <form class="navbar-form navbar-right" method="POST" action="#">
+                    <input type="text" name="email" class="form-control" placeholder="Enter email" /> {% csrf_token %}
+                </form>
+            </div>
+        </nav>
         <div class="row">
             <div class="col-md-6 col-md-offset-3 jumbotron">
                 <div class="text-center">
