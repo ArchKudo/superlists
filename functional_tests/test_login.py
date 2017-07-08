@@ -5,7 +5,7 @@ import re
 
 
 TEST_EMAIL = 'exshir@nbox.notif.me'
-SUBJECT = 'Your login link for Todoapp MVC:'
+SUBJECT = 'Your login link for To-do app MVC'
 
 
 class LoginTest(FunctionalTestSetup):
@@ -29,7 +29,7 @@ class LoginTest(FunctionalTestSetup):
         self.assertEqual(email.subject, SUBJECT)
 
         # email contains url link
-        self.assertIn('Use this link to log-in', email.body)
+        self.assertIn('Use this link to login:', email.body)
         url_found = re.search(r'http://.+/.+$', email.body)
         if not url_found:
             self.fail(f'Login url not found in {email.body}')
