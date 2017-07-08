@@ -1,6 +1,5 @@
 from django.test import TestCase
 from unittest.mock import patch, call
-# import accounts.views
 
 
 class SendLoginEmailViewTest(TestCase):
@@ -19,7 +18,7 @@ class SendLoginEmailViewTest(TestCase):
         self.assertTrue(mock_send_mail.called, True)
 
         (subject, body, from_email, to_list), kwargs = mock_send_mail.call_args
-        self.assertEqual(subject, 'Your login link for to-do app')
+        self.assertEqual(subject, 'Your login link for To-do app MVC')
         self.assertEqual(body, 'Use this link to login:')
         self.assertEqual(from_email, 'noreply@todoapp')
         self.assertEqual(to_list, ['user@domain.com'])
@@ -30,7 +29,7 @@ class SendLoginEmailViewTest(TestCase):
             '/accounts/send_login_email',
             data={'email': 'user@domain.com'},)
 
-        expected = 'Check email for login link...'
+        expected = 'Check your email for login link'
 
         self.assertEqual(mock_messages.success.call_args,
                          call(response.wsgi_request, expected))
