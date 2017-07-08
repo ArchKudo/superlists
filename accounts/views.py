@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 def send_login_email(request):
@@ -9,6 +10,8 @@ def send_login_email(request):
         'Use this link to login:',
         'noreply@todoapp',
         [email])
+
+    messages.success(request, 'Check email for login link...')
     return redirect('/')
 
 
