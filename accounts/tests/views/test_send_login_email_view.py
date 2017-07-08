@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, call
 # import accounts.views
 
 
@@ -24,13 +24,13 @@ class SendLoginEmailViewTest(TestCase):
         self.assertEqual(from_email, 'noreply@todoapp')
         self.assertEqual(to_list, ['user@domain.com'])
 
-    def test_add_success_message(self):
+    @patch('accounts.views.messages')
+    def test_add_success_message(self, mock_messages):
         response = self.client.post(
             '/accounts/send_login_email',
-            data={'email': 'user@domain.com'},
-            follow=True)
+            data={'email': 'user@domain.com'},)
 
-        message = list(response.context['messages'])[0]
+        expected = 'Check email for login link...'
 
-        self.assertEqual(message.message, 'Check email for login link...')
-        self.assertEqual(message.tags, 'success')
+        self.assertEqual(mock_messages.success.call_args,
+                         call(response.wsgi_request, expected))
