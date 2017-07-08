@@ -22,7 +22,7 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">To-Do</a>
-                <form class="navbar-form navbar-right" method="POST" action="#">
+                <form class="navbar-form navbar-right" method="POST" action="{% url 'send_login_email' %}">
                     <input type="text" name="email" class="form-control" placeholder="Enter email" /> {% csrf_token %}
                 </form>
             </div>
