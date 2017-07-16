@@ -48,7 +48,6 @@ class SendLoginEmailViewTest(TestCase):
                          data={'email': 'user@domain.com'})
 
         token = Token.objects.first()
-        print(type(token))
         expected_url = f'http://testserver/accounts/login?token={token.uid}'
 
         (subject, body, from_email, to_list), kwargs = mock_mail.call_args
