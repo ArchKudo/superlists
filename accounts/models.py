@@ -1,7 +1,11 @@
+from django.contrib import auth
 from django.db import models
 import uuid
 
 # Create your models here.
+
+# Workaround for auth login
+auth.signals.user_logged_in.disconnect(auth.models.update_last_login)
 
 
 class User(models.Model):

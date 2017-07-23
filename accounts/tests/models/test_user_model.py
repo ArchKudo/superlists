@@ -1,7 +1,7 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
+from django.contrib import auth
 
-User = get_user_model()
+User = auth.get_user_model()
 
 
 class UserModelTest(TestCase):
@@ -13,3 +13,9 @@ class UserModelTest(TestCase):
     def test_email_is_primary_key(self):
         user = User(email='user@domain.com')
         self.assertEqual(user.pk, 'user@domain.com')
+
+    def test_auth_login(self):
+        user = User.objects.create(email='user@domain.com')
+        user.backend = ''
+        request = self.client.request().wsgi_request
+        auth.login(request, user)
