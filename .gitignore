@@ -7,3 +7,4 @@ geckodriver.log
 superlists/todo.sublime-workspace
 superlists/todo.sublime-project
 *.swp
+.config
